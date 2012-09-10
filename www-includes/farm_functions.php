@@ -6,9 +6,9 @@
 		cyle gage, emerson college, 2012
 	
 	
-	getFarmingStatus($mid)
+	getFarmingStatus($jid)
 	getFarmingStatusByOutPath($path)
-	addFarmingJob($mid, $paths, $options)
+	addFarmingJob($jid, $paths, $options)
 	
 */
 
@@ -22,21 +22,26 @@ $tiers = array(
 	'small' => array('vb' => 300, 'vw' => 400, 'vh' => 260, 'ab' => 64)
 );
 
-function getFarmingStatus($mid = 0) {
-	// get full status of all media being transcoded for the MID
+function getFarmingStatus($jid = '') {
+	// get full status of media being transcoded for this ID
 	
-	if (!isset($mid) || !is_numeric($mid) || $mid < 1) {
+	if (!isset($jid) || trim($jid) == '') {
 		return false;
 	}
 	
-	$mid = (int) $mid * 1;
+	if (gettype($jid) == 'object' && get_class($jid) == 'MongoId') {
+		$jid = $jid;
+	} else if (gettype($jid) == 'string') {
+		$jid = new MongoId($jid);
+	} else {
+		return false;
+	}
 	
-	global $m;
-	$farmdb = $m->farm;
+	global $farmdb;
 	
 	$jobs = array();
 	
-	$find_jobs = $farmdb->jobs->find(array('mid' => $mid));
+	$find_jobs = $farmdb->jobs->find(array('jid' => $jid));
 	if ($find_jobs->count() > 0) {
 		foreach ($find_jobs as $job) {
 			$jobs[] = $job;
@@ -56,8 +61,7 @@ function getFarmingStatusByOutPath($path = '') {
 	
 	$path = trim($path);
 	
-	global $m;
-	$farmdb = $m->farm;
+	global $farmdb;
 	$m->setSlaveOkay();
 	
 	$status = 'Unknown';
@@ -100,18 +104,22 @@ function getFarmingStatusByOutPath($path = '') {
 	return $status;
 }
 
-function addFarmingJob($mid = 0, $paths = array(), $options = '') {
-	// add a new farming job for mid with options...
+function addFarmingJob($jid = '', $paths = array(), $options = '') {
+	// add a new farming job for jid with options...
 	// if options is a string, use that as a preset
 	// if options is an array, use those explicit settings
 	
-	global $tiers;
-	
-	if (!isset($mid) || !is_numeric($mid) || $mid < 1) {
+	if (!isset($jid) || trim($jid) == '') {
 		return false;
 	}
 	
-	$mid = (int) $mid * 1;
+	if (gettype($jid) == 'object' && get_class($jid) == 'MongoId') {
+		$jid = $jid;
+	} else if (gettype($jid) == 'string') {
+		$jid = new MongoId($jid);
+	} else {
+		return false;
+	}
 	
 	if (!isset($paths) || !is_array($paths)) {
 		return false;
@@ -120,6 +128,8 @@ function addFarmingJob($mid = 0, $paths = array(), $options = '') {
 	if (!isset($paths['in']) || !isset($paths['out'])) {
 		return false;
 	}
+	
+	global $tiers;
 	
 	$transcode_options = array();
 	
@@ -134,13 +144,12 @@ function addFarmingJob($mid = 0, $paths = array(), $options = '') {
 		return false;
 	}
 	
-	global $m;
-	$farmdb = $m->farm;
+	global $farmdb;
 	
 	$new_job = array();
-	$new_job['mid'] = $mid;
-	$new_job['p'] = 1; // priority 1 for median jobs
-	$new_job['o'] = 1; // origin id #1 for median
+	$new_job['jid'] = $jid;
+	$new_job['p'] = 100; // priority 100 for general jobs
+	$new_job['o'] = 2; // origin id #2 for general transcode farm
 	$new_job['s'] = 0; // status of 0 for new jobs
 	$new_job['fid'] = 0; // unknown farmer ID as yet
 	$new_job['in'] = trim($paths['in']);
@@ -182,19 +191,20 @@ farming job object in mongo
 
 Array(
 	
-	'mid' => 20002,					// media ID this is for (if any) -- index'd
-	'p' => 1,						// priority (1 for median, 2 for anything else) -- index'd
-	'o' => 1,						// origin (1 for median, 2 for transcode farm) -- index'd
-	's' => 1,						// current status code -- index'd
+	'jid' => MongoId('awnda'),		// transcoding farm job ID
+	'p' => 100,						// priority (1 for median, 100 for transcode farm) -- index'd
+	'o' => 2,						// origin (1 for median, 2 for transcode farm) -- index'd
+	's' => 1,						// current status code -- index'd (0 for pending, 1 for being transcoded, 2 for done, 3 for error)
 	'fid' => MongoId('901ao21j'),	// farmer mongo ID (if any)
-	'in' => '/median/in..',			// file input
-	'out' => '/median/out...',		// file output -- index'd
+	'in' => '/master/path/in..',	// file input
+	'out' => '/master/path/out...',	// file output -- index'd
 	'vw' => 1280,					// desired video max width
 	'vh' => 720,					// desired video max height
 	'vb' => 1200,					// desired video bitrate
 	'ab' => 128,					// desired audio bitrate
 	'tsc' => 1344333443,			// time created
 	'tsu' => 1393939222				// last updated -- index'd
+	'm' => 'error message',			// error message (if any)
 	
 )
 

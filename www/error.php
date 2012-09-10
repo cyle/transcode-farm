@@ -2,7 +2,7 @@
 
 /*
 
-	THE FARM
+	THERE WAS AN ERROR!
 		cyle gage, emerson college, 2012
 
 */
@@ -12,16 +12,16 @@ require_once('../www-includes/login_check.php');
 
 ?>
 <?php
-$page_title = 'The Open Transcoding Farm';
+$page_title = 'Error';
 require_once('pagepieces/head.php');
 ?>
 </head>
 <body>
 
-	<div class="container" id="index-page">
+	<div class="container" id="error-page">
 
 <?php 
-$where_are_we = 'index';
+$where_are_we = 'error';
 require_once('pagepieces/header.php');
 ?>
 
@@ -29,14 +29,13 @@ require_once('pagepieces/header.php');
 		
 		<div class="row">
 			<div class="twelve columns">
+				<h2>There was an error!</h2>
 				<?php
-				
-				// if logged in, show user's pending/completed stuff here
-				
+				if (isset($error_message) && trim($error_message) != '') {
+					echo '<p class="error">'.$error_message.'</p>'."\n";
+				}
 				?>
-				<p><a href="/farming.php">Public Farm Status Page</a></p>
-				<?php if ($current_user['userlevel'] == 1) { ?><p><a href="/admin/farming.php">Admin Farm Status Page</a></p><?php } ?>
-				<?php if ($current_user['loggedin'] == true) { ?><p><a href="/upload/">Upload Videos!</a></p><?php } ?>
+				<p>Please go back, or if you're still having trouble, call the <a href="http://www.emerson.edu/about-emerson/offices-departments/help-desk" target="_blank">IT Help Desk</a>.</p>
 			</div>
 		</div>
 		

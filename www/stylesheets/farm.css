@@ -2,4 +2,33 @@
    farming styles
 ----------------------------------------- */
 
+p {
+	line-height: 1.2;
+	margin-bottom: 5px;
+}
 
+#top-nav {
+	margin-top: 7px;
+}
+
+#header a {
+	color: inherit;
+}
+
+table {
+	width: 100%;
+}
+
+table th {
+	padding: 9px 10px;
+	text-align: left;
+}
+
+#footer {
+	margin-bottom: 25px;
+	color: #ccc;
+}
+
+#footer a {
+	color: inherit;
+}
