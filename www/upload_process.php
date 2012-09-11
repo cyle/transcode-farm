@@ -2,8 +2,7 @@
 
 // this script processes the uploaded files
 
-$farm_files_path = '/farm/files/';
-
+require_once('../config/config.php');
 require_once('../www-includes/error_functions.php');
 require_once('../www-includes/log_functions.php');
 

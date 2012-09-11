@@ -1,9 +1,7 @@
 #!/usr/bin/php
 <?php
 
-// you can disable this feature if you want...
-$delete_expired = true;
-$file_out_path = '/farm/files/out/';
+require_once('../config/config.php');
 
 if (!defined('STDIN') || php_sapi_name() != 'cli' || !empty($_SERVER['REMOTE_ADDR'])) {
 	die('This is only usable via CLI.');
@@ -12,6 +10,8 @@ if (!defined('STDIN') || php_sapi_name() != 'cli' || !empty($_SERVER['REMOTE_ADD
 if (!$delete_expired) {
 	die(); // we are not deleting expired videos, apparently
 }
+
+$file_out_path = $farm_files_path.'out/';
 
 require_once('../www-includes/dbconn_mongo.php');
 

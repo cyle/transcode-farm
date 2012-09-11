@@ -13,13 +13,14 @@
 */
 
 require_once('dbconn_mongo.php');
+require_once('../config/config.php');
 
 function bailout($error_message = 'There was an error of some kind, sorry!', $username = '', $jid = '', $additional_data = '', $display_page = true) {
 	// uhh -- formatting?
 	//echo $error_message;
 	// log that shit
 	
-	global $farmdb;
+	global $farmdb, $error_page;
 	
 	$new_error = array();
 	$new_error['ts'] = time();
@@ -38,7 +39,7 @@ function bailout($error_message = 'There was an error of some kind, sorry!', $us
 	$save_error = $farmdb->error_log->insert($new_error);
 	
 	if (isset($display_page) && $display_page == true) {
-		require_once('/farm/www/error.php');
+		require_once($error_page);
 	} else {
 		echo $error_message;
 	}

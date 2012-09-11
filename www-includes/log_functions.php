@@ -13,9 +13,8 @@
 
 */
 
-$logs_dir = '/farm/logs/';
-
 require_once('dbconn_mongo.php');
+require_once('../config/config.php');
 
 function oneLinePrintArray($array = array()) {
 	$string = print_r($array, true);

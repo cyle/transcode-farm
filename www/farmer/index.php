@@ -2,14 +2,11 @@
 
 // farming API for farmers
 
-$home_url = 'http://farm.emerson.edu/';
-$admin_email = 'cyle_gage@emerson.edu'; // set this to whoever gets error emails
-$mail_smtp_server = 'owa.emerson.edu';
-$expire_hours = 48; // how many hours before expiring the finished entries
-
 if (!isset($_GET['t']) || trim($_GET['t']) == '') {
 	die('nope');
 }
+
+require_once('../../config/config.php');
 
 $action = strtolower(trim($_GET['t']));
 

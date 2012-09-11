@@ -11,7 +11,7 @@
 $login_required = true;
 require_once('../www-includes/login_check.php');
 
-$page_title = 'The Uploader';
+$page_title = 'Upload';
 require_once('pagepieces/head.php');
 ?>
 </head>

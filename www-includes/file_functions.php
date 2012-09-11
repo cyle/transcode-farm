@@ -12,8 +12,7 @@
 */
 
 require_once('dbconn_mongo.php');
-
-$ffprobe_cmd = '/usr/bin/ffprobe';
+require_once('../config/config.php');
 
 function getVideoFileInfo($path = '', $debug = false) {
 	// run ffprobe and get video file info for the path provided
