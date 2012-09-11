@@ -16,6 +16,7 @@ require_once('dbconn_mongo.php');
 
 // presets...
 $tiers = array(
+	'max' => array('vb' => 2200, 'vw' => 1920, 'vh' => 1080, 'ab' => 196),
 	'ultra' => array('vb' => 1700, 'vw' => 1280, 'vh' => 720, 'ab' => 128),
 	'high' => array('vb' => 1200, 'vw' => 1280, 'vh' => 720, 'ab' => 128),
 	'medium' => array('vb' => 600, 'vw' => 720, 'vh' => 480, 'ab' => 96),
@@ -104,19 +105,19 @@ function getFarmingStatusByOutPath($path = '') {
 	return $status;
 }
 
-function addFarmingJob($jid = '', $paths = array(), $options = '') {
+function addFarmingJob($eid = '', $paths = array(), $options = '') {
 	// add a new farming job for jid with options...
 	// if options is a string, use that as a preset
 	// if options is an array, use those explicit settings
 	
-	if (!isset($jid) || trim($jid) == '') {
+	if (!isset($eid) || trim($eid) == '') {
 		return false;
 	}
 	
-	if (gettype($jid) == 'object' && get_class($jid) == 'MongoId') {
-		$jid = $jid;
-	} else if (gettype($jid) == 'string') {
-		$jid = new MongoId($jid);
+	if (gettype($eid) == 'object' && get_class($eid) == 'MongoId') {
+		$eid = $eid;
+	} else if (gettype($eid) == 'string') {
+		$eid = new MongoId($eid);
 	} else {
 		return false;
 	}
@@ -147,7 +148,7 @@ function addFarmingJob($jid = '', $paths = array(), $options = '') {
 	global $farmdb;
 	
 	$new_job = array();
-	$new_job['jid'] = $jid;
+	$new_job['eid'] = $eid; // the parent entry this farming job belongs to
 	$new_job['p'] = 100; // priority 100 for general jobs
 	$new_job['o'] = 2; // origin id #2 for general transcode farm
 	$new_job['s'] = 0; // status of 0 for new jobs

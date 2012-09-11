@@ -7,6 +7,11 @@ p {
 	margin-bottom: 5px;
 }
 
+div.panel p {
+	margin-bottom: 8px;
+	margin-top: 8px;
+}
+
 #top-nav {
 	margin-top: 7px;
 }
@@ -24,6 +29,10 @@ table th {
 	text-align: left;
 }
 
+div.entry {
+	margin: 10px;
+}
+
 #footer {
 	margin-bottom: 25px;
 	color: #ccc;
@@ -31,4 +40,53 @@ table th {
 
 #footer a {
 	color: inherit;
+}
+
+div.select-preset {
+	margin: 5px;
+}
+
+#file-entry-list .file-entry {
+	border: 2px dotted #ccc;
+	padding: 10px;
+	margin-bottom: 10px;
+}
+
+#file-entry-list .file-entry p {
+	margin-bottom: 4px;
+}
+
+div.remove-this-file {
+	float: right;
+	font-weight: bold;
+	color: red;
+	cursor: pointer;
+	font-size: 1.5rem;
+}
+
+#upload-page .button.small.add-another, #upload-page .button.small.remove-other {
+	padding: 4px 7px;
+}
+
+#upload-page input[type="checkbox"] {
+	margin-top: 7px;
+}
+#upload-page input[type="file"], #fileswap-page input[type="file"] {
+	background-color: #5da423;
+	padding: 5px;
+	border-radius: 4px;
+	color: white;
+	border: 1px solid #396516;
+}
+
+#progress-bar #bar-outer {
+	border: 1px solid black;
+}
+
+#progress-bar #bar-inner {
+	background-color: #f00;
+}
+
+.button, .label {
+	font-weight: normal;
 }

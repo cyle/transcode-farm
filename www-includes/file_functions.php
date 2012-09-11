@@ -96,23 +96,4 @@ function getVideoFileInfo($path = '', $debug = false) {
 	
 }
 
-function isVideoFlashCompatible($video_info = array()) {
-	// the input needs to be the video info from getFFProbeInfo()
-	// codecs that are flash-compatible
-	$instant_video_codecs = array('h264', 'h264 (baseline)', 'h264 (high)', 'h264 (main)', 'h264 (constrained baseline)');
-	$instant_audio_codecs = array('mpeg4aac', 'faac', 'none', 'libfaad', 'aac');
-	
-	$flash_compatible = false;
-	
-	if (in_array($video_info['vc'], $instant_video_codecs) || preg_match('/h264/', $video_info['vc']) > 0) {
-		// it is among the instant-available compatible video codecs...
-		if (in_array($video_info['ac'], $instant_audio_codecs) || preg_match('/aac/', $video_info['ac']) > 0) {
-			// it is among the instant-available compatible audio codecs...
-			$flash_compatible = true;
-		}
-	}
-	
-	return $flash_compatible;
-}
-
 ?>

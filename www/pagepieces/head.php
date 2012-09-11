@@ -28,7 +28,6 @@ if (!isset($page_title) || trim($page_title) == '') {
 	<!--[if lt IE 9]>
 		<link rel="stylesheet" href="/stylesheets/ie.css">
 	<![endif]-->
-	<script src="/javascripts/modernizr.foundation.js"></script>
 	<!-- IE Fix for HTML5 Tags -->
 	<!--[if lt IE 9]>
 		<script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script>

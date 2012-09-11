@@ -132,10 +132,9 @@ require_once('pagepieces/header.php');
 					echo '<p>Nothing in the queue.</p>';
 				} else {
 					echo '<table>';
-					echo '<tr><th>farmer</th><th>quality</th><th>created</th><th>updated</th></tr>';
+					echo '<tr><th>quality</th><th>created</th><th>updated</th></tr>';
 					foreach ($get_queue as $job) {
 						echo '<tr>';
-						echo '<td>'.$farmer_names[''.$job['fid'].''].'</td>';
 						echo '<td>'.($job['vb'] + $job['ab']).'kbps</td>';
 						echo '<td>'.date('m.d.Y h:i:s A', $job['tsc']).'</td>';
 						echo '<td>'.((isset($job['tsu'])) ? date('m.d.Y h:i:s A', $job['tsu']) : '').'</td>';

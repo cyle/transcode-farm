@@ -85,7 +85,8 @@ var server = http.createServer(function(req, res) {
 			// ok so now parse through the files and put them in their own object/array
 			var final_results = [];
 			for (var i = 0; i < files.length; i++) {
-				var temp_result = { 'path': '', 'username': username };
+				var temp_result = { 'name': '', 'path': '', 'username': username, 'presets': fields[0] };
+				temp_result.name = files[i].name;
 				temp_result.path = files[i].path;
 				fs.chownSync(files[i].path, 33, 33);
 				final_results.push(temp_result);
