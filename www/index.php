@@ -32,33 +32,35 @@ require_once('pagepieces/header.php');
 		<div class="row">
 			<div class="twelve columns">
 				<?php
-				
 				// if logged in, show user's pending/completed stuff here
-				
-				$entries = getUserEntries($current_user['username']);
-				if ($entries == false || count($entries) == 0) {
-					echo '<p>You do not have any entries uploaded at this time.</p>';
-				} else {
-					foreach ($entries as $entry) {
-						//echo '<pre>'.print_r($entry, true).'</pre>';
-						echo '<div class="entry">'."\n";
-						echo '<p><b>'.$entry['fn'].'</b> - created '.date('m-d-Y h:ia', $entry['tsc']).'</p>'."\n";
-						foreach ($entry['pa']['c'] as $filejob) {
-							echo '<p>'.bitrateToFriendly($filejob['b']).' - '.(($filejob['e'] == false) ? 'not ready' : 'ready!').'</p>'."\n";
+				if ($current_user['loggedin']) {
+					echo '<h3>Your Entries</h3>'."\n";
+					$entries = getUserEntries($current_user['username']);
+					if ($entries == false || count($entries) == 0) {
+						echo '<p>You do not have any entries uploaded at this time.</p>';
+					} else {
+						foreach ($entries as $entry) {
+							//echo '<pre>'.print_r($entry, true).'</pre>';
+							echo '<div class="entry">'."\n";
+							echo '<p><b>'.$entry['fn'].'</b> - created '.date('m-d-Y h:ia', $entry['tsc']).'</p>'."\n";
+							foreach ($entry['pa']['c'] as $filejob) {
+								echo '<p>'.bitrateToFriendly($filejob['b']).' - '.(($filejob['e'] == false) ? 'not ready' : 'ready! <a class="button small success radius" href="/download/'.$entry['_id'].'/'.$filejob['b'].'/">Download!</a>').'</p>'."\n";
+							}
+							if (isset($entry['ex']) && $entry['ex'] * 1 > 0) {
+								echo '<p>Entry will expire in '.getRelativeTime($entry['ex']).', exactly: '.date('m-d-Y h:ia', $entry['ex']).'.</p>'."\n";
+							} else {
+								echo '<p>Entry will expire 48 hours after all versions have been transcoded.</p>'."\n";
+							}
+							echo '</div>'."\n";
 						}
-						if (isset($entry['ex']) && $entry['ex'] * 1 > 0) {
-							echo '<p>Entry will expire in '.getRelativeTime($entry['ex']).', exactly: '.date('m-d-Y h:ia', $entry['ex']).'.</p>'."\n";
-						} else {
-							echo '<p>Entry will expire 48 hours after all versions have been transcoded.</p>'."\n";
-						}
-						echo '</div>'."\n";
 					}
-				}
-				
 				?>
-				<p><a href="/farming.php">Public Farm Status Page</a></p>
-				<?php if ($current_user['userlevel'] == 1) { ?><p><a href="/admin/farming.php">Admin Farm Status Page</a></p><?php } ?>
-				<?php if ($current_user['loggedin'] == true) { ?><p><a href="/upload/">Upload Videos!</a></p><?php } ?>
+				<p><a href="/upload/" class="button large radius success">Upload Videos!</a></p>
+				<?php
+				} // end if logged in check
+				?>
+				<p><a href="/farming.php">Public Farm Status Page &raquo;</a></p>
+				<?php if ($current_user['userlevel'] == 1) { ?><p><a href="/admin/farming.php">Admin Farm Status Page &raquo;</a></p><?php } ?>
 			</div>
 		</div>
 		

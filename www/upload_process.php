@@ -62,6 +62,8 @@ foreach ($upload_info as $batched) {
 		continue;
 	}
 	
+	$username = strtolower(trim($batched['username']));
+	
 	// make sure path is set for each
 	if (!isset($batched['path']) || trim($batched['path']) == '') {
 		$result_status = 200;
@@ -146,7 +148,7 @@ foreach ($upload_info as $batched) {
 	$result_message = 'File uploaded successfully.';
 	
 	// generate a new entry ID for this
-	$eid = generateNewEntry($batched['username'], $batch_title);
+	$eid = generateNewEntry($username, $batch_title);
 	
 	if (!$eid) {
 		$result_status = 200;
@@ -293,6 +295,9 @@ foreach ($upload_info as $batched) {
 	
 	// enable it
 	$updated_entry['e'] = true;
+	
+	// write the contact email address
+	$updated_entry['em'] = $username.'@emerson.edu';
 	
 	//writeToLog('Updated entry info: '.oneLinePrintArray($updated_entry), $batch_log, $uid, $eid);
 	

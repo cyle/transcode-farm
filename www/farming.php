@@ -33,8 +33,8 @@ require_once('pagepieces/header.php');
 		<div class="row">
 			<div class="twelve columns">
 				<h2>The Farm</h2>
-				<p><b>What am I looking at?</b> Well, you're looking at the "farm" of computers Median uses to transcode your videos into different formats. For example, when you upload a video, Median automatically creates a version that is iPhone-compatible. It does that in the farm.</p>
-				<p><b>How does it work?</b> The "farmers" listed below are sitting around waiting for something to do. Every 60 seconds they ask Median, "hey, got a job for me?" Those are the jobs in the queue, listed below, which are first come, first served. The farmer is assigned a file, which it then transcodes using HandBrake. When it's done, it gives the new file to Median. If any of that process fails, it's listed here, too.</p>
+				<p><b>What am I looking at?</b> Well, you're looking at the "farm" of computers the Open Transcoding Farm uses to transcode your videos into different formats.</p>
+				<p><b>How does it work?</b> The "farmers" listed below are sitting around waiting for something to do. Every 60 seconds they ask the master server, "hey, got a job for me?" Those are the jobs in the queue, listed below, which are first come, first served. The farmer is assigned a file, which it then transcodes using HandBrake. When it's done, it gives the new file to the master server. If any of that process fails, it's listed here, too.</p>
 				<?php
 				$num_done = $farmdb->jobs->find(array('s' => 2, 'hl' => array('$exists' => true)))->count();
 				

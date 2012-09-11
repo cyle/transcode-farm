@@ -202,7 +202,7 @@ require_once('../pagepieces/header.php');
 						echo '<tr>';
 						echo '<td>'.$job['_id'].'</td>';
 						echo '<td>'.$farmer_names[''.$job['fid'].''].'</td>';
-						echo '<td>'.($job['vb'] + $job['ab']).'knps</td>';
+						echo '<td>'.($job['vb'] + $job['ab']).'kbps</td>';
 						echo '<td>'.date('m.d.Y h:i:s A', $job['tsc']).'</td>';
 						echo '<td>'.date('m.d.Y h:i:s A', $job['tsu']).'</td>';
 						echo '<td>'.number_format($job['hl']/60, 1).' minutes</td>';

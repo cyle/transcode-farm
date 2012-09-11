@@ -59,6 +59,7 @@ function getUserEntries($username = '') {
 	
 	$get_entries = $farmdb->entries->find(array('un' => $username, 'e' => true));
 	if ($get_entries->count() > 0) {
+		$get_entries->sort( array('tsc' => 1) );
 		foreach ($get_entries as $entry) {
 			$entries[] = $entry;
 		}

@@ -2,13 +2,10 @@
 
 // farming API for farmers
 
-/*
-
-	check in heartbeat
-	set status
-	get job
-
-*/
+$home_url = 'http://farm.emerson.edu/';
+$admin_email = 'cyle_gage@emerson.edu'; // set this to whoever gets error emails
+$mail_smtp_server = 'owa.emerson.edu';
+$expire_hours = 48; // how many hours before expiring the finished entries
 
 if (!isset($_GET['t']) || trim($_GET['t']) == '') {
 	die('nope');
@@ -24,8 +21,7 @@ if (isset($_SERVER['REMOTE_ADDR']) && trim($_SERVER['REMOTE_ADDR']) != '' && tri
 	$farmer_ip = trim($_SERVER['HTTP_X_FORWARDED_FOR']); // ip address of viewer
 }
 
-require_once('../includes/dbconn_mongo.php');
-$farmdb = $m->farm;
+require_once('../../www-includes/dbconn_mongo.php');
 
 if ($action == 'h') {
 	// heartbeat!
@@ -57,15 +53,30 @@ if ($action == 'h') {
 		// welp...
 		die('error');
 	} else {
-		$farmer_id = $farmer['_id'];
 		if ($farmer['e'] == false) { // do not allow disabled farmers
 			echo json_encode(array('jobs' => 0));
 			die();
 		}
+		$farmer_id = $farmer['_id'];
 	}
 	
-	// get new job!
-	$get_jobs = $farmdb->jobs->find(array('s' => 0, 'o' => 1)); // get job with status 0 (waiting) and origin #1 (median)
+	// get new job
+	$get_jobs_query = array('s' => 0, 'o' => 2); // get job with status 0 (waiting) and origin #2 (general transcoding)
+	
+	// if farmer tier level is set, use it to determine the max they can do
+	if (isset($farmer['t']) && $farmer['t'] * 1 == 1) {
+		// so low tier jobs only
+		$get_jobs_query_low = $get_jobs_query;
+		$get_jobs_query_low['vb'] = array('$lte' => 600);
+		$get_jobs = $farmdb->jobs->find($get_jobs_query_low);
+		if ($get_jobs->count() == 0) { // if you can't find any for low bitrate, go ahead and try something bigger
+			unset($get_jobs);
+			$get_jobs = $farmdb->jobs->find($get_jobs_query);
+		}
+	} else {
+		$get_jobs = $farmdb->jobs->find($get_jobs_query);
+	}
+	
 	if ($get_jobs->count() > 0) {
 		$get_jobs->sort(array('tsc' => 1))->limit(1); // get the oldest first
 		$job = $get_jobs->getNext();
@@ -109,8 +120,6 @@ if ($action == 'h') {
 		die('error, no job with that ID');
 	}
 	
-	$mid = (int) $job['mid'] * 1;
-	
 	$updated_job = array();
 	$updated_job['s'] = (int) $json['s'] * 1;
 	$updated_job['tsu'] = time();
@@ -126,30 +135,29 @@ if ($action == 'h') {
 	$update_job = $farmdb->jobs->update(array('_id' => $jobid), array('$set' => $updated_job), array('safe' => true));
 	
 	if ($json['s'] * 1 == 3) {
-		// if error, send an email to median@emerson.edu
-		include("Mail.php");
-		$smtp_params["host"] = "owa.emerson.edu";
-		$mailer = Mail::factory("smtp", $smtp_params);
-		$subject = 'Median Mail! Error encoding entry...';
-		$from = 'median@emerson.edu';
-		$to = 'median@emerson.edu';
+		// if error, send an email to admins
+		require_once('Mail.php');
+		$smtp_params['host'] = $mail_smtp_server;
+		$mailer = Mail::factory('smtp', $smtp_params);
+		$subject = '[Farm Mail] Error encoding entry...';
+		$from = $admin_email;
+		$to = $admin_email;
 		$headers = array('From' => $from, 'Subject' => $subject);
-		$body = 'There was an error encoding media entry #'.$mid.' (job id #'.$jobid.') from node '.$farmer_ip.' with message: '."\n\n".trim($json['m']);
+		$body = 'There was an error encoding entry #'.$job['eid'].' (job id #'.$jobid.') from node '.$farmer_ip.' with message: '."\n\n".trim($json['m']);
 		$mailer->send($to, $headers, $body);
 	}
 	
 	if ($json['s'] * 1 == 2) {
-		// ok now enable the media entry and also enable the path within that entry...
-		$media_entry = $mdb->media->findOne(array('mid' => $mid));
-		if (!isset($media_entry)) {
-			die('error, no MID for that job');
+		// ok now enable the path within the entry...
+		$entry = $farmdb->entries->findOne(array('_id' => $job['eid']));
+		if (!isset($entry)) {
+			die('error, no master entry for that job');
 		}
-		$updated_media_entry = array();
-		$updated_media_entry['en'] = true;
-		$updated_media_entry['pa'] = array();
-		$updated_media_entry['pa']['c'] = array();
-		$updated_media_entry['pa']['in'] = $media_entry['pa']['in'];
-		foreach ($media_entry['pa']['c'] as $media_path) {
+		$updated_entry = array();
+		$updated_entry['pa'] = array();
+		$updated_entry['pa']['c'] = array();
+		$updated_entry['pa']['in'] = $entry['pa']['in'];
+		foreach ($entry['pa']['c'] as $media_path) {
 			$new_media_path = $media_path;
 			if (trim($new_media_path['p']) == trim($job['out'])) {
 				$new_media_path['e'] = true;
@@ -159,14 +167,40 @@ if ($action == 'h') {
 				error_reporting(1);
 				$new_media_path['fs'] = $filesize_new;
 			}
-			$updated_media_entry['pa']['c'][] = $new_media_path;
+			$updated_entry['pa']['c'][] = $new_media_path;
 		}
 		// update!
-		$update_media = $mdb->media->update(array('mid' => $mid), array('$set' => $updated_media_entry), array('safe' => true));
-		// add an action log item... why not?
-		require_once('../includes/activity_functions.php');
-		$total_bitrate = $job['vb'] + $job['ab'];
-		addNewAction(array('t' => 'encoded', 'mid' => $mid, 'uid' => 0, 'b' => $total_bitrate));
+		$update_entry = $farmdb->entries->update(array('_id' => $job['eid']), array('$set' => $updated_entry), array('safe' => true));
+		// send the user some mail about their new entry
+		require_once('Mail.php');
+		$smtp_params['host'] = $mail_smtp_server;
+		$mailer = Mail::factory('smtp', $smtp_params);
+		$subject = '[Farm Mail] Done encoding one version!';
+		$from = $admin_email;
+		$to = $entry['em'];
+		$headers = array('From' => $from, 'Subject' => $subject);
+		$body = 'One version of your Open Transcoding Farm entry "'.$entry['fn'].'" has finished encoding. Please log in to '.$home_url.' to download the file!'."\n\n".' - FarmBot';
+		$mailer->send($to, $headers, $body);
+		/*
+		
+		see if all the entries are done. if so, start the timer...
+		
+		*/
+		unset($entry, $media_path); // clear these just in case
+		$entry = $farmdb->entries->findOne(array('_id' => $job['eid']));
+		$all_enabled = true;
+		foreach ($entry['pa']['c'] as $media_path) {
+			if (!isset($media_path['e']) || $media_path['e'] == false) {
+				$all_enabled = false;
+			}
+		}
+		if ($all_enabled) {
+			$set_expiry = $farmdb->entries->update(array('_id' => $job['eid']), array('$set' => array('ex' => strtotime('+'.$expire_hours.' hours'))), array('safe' => true));
+			$subject = '[Farm Mail] Your files are ready!';
+			$headers = array('From' => $from, 'Subject' => $subject);
+			$body = 'All versions of your Open Transcoding Farm entry "'.$entry['fn'].'" have finished encoding. Please log in to '.$home_url.' to download the files! They will expire and be automatically deleted from the system in '.$expire_hours.' hours.'."\n\n".' - FarmBot';
+			$mailer->send($to, $headers, $body);
+		}
 	}
 	
 	echo 'ok';
@@ -189,6 +223,7 @@ Array(
 	'e' => 1,					// enabled or not -- index'd
 	'tsc' => 1344350435,		// when created
 	'tsh' => 1344350435			// last heartbeat -- index'd
+	't' => 0,					// tier level of hardware, 0 is any input, 1 is low-end only (for VMs, for example)
 	
 )
 
