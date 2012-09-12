@@ -12,7 +12,7 @@
 */
 
 // for permalinks
-$home_url = 'http://farm.emerson.edu/'; // the URL to the Farm
+$home_url = 'http://farm.whatever.com/'; // the URL to the Farm
 
 // paths + files
 $farm_files_path = '/farm/files/'; // where to store files, needs "in" and "out" subdirectories
@@ -21,8 +21,8 @@ $error_page = '/farm/www/error.php'; // the error page utilized for reporting pr
 $ffprobe_cmd = '/usr/bin/ffprobe'; // need this to get video information
 
 // mail settings
-$admin_email = 'cyle_gage@emerson.edu'; // set this to whoever gets error emails + who to send as
-$mail_smtp_server = 'owa.emerson.edu'; // what SMTP server to use
+$admin_email = 'admin@whatever.com'; // set this to whoever gets error emails + who to send as
+$mail_smtp_server = 'localhost'; // what SMTP server to use
 
 // remove_expired.php cron job settings
 $delete_expired = true; // you don't actually have to delete expired, but you probably should
