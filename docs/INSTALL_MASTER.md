@@ -218,4 +218,6 @@ So you'll notice that in most every script there's a require_once() for "login_c
 
 Save that as login_check.php and put it in www-includes. That script will just allow anyone to use the system. Plug in your own system if you have one. But bottom line, you have to have something. The user tracking inside this is rudimentary right now, but it's something, at least.
 
+You also should make login.php and logout.php scripts in /farm/www/ for your login system, even if they're just empty files.
+
 That... should... be... it. See INSTALL_NODE to install some nodes and get things working!
