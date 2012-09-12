@@ -3,21 +3,15 @@
 
     FARMER NODE
 
-1. http GET for things to do
-2. SCP the thing to do to the local drive
-3. handbrake it
-4. when done, send it out via SCP                
-5. http GET to update the status of the item (done or error)
-
 */
 
 // stuff you might want to configure
 
 var debugmode = false; // use this when not running as daemon to debug this
 var master_url = 'farm.emerson.edu'; // the URL to the master server
-var scpserver = 'farmer@farm'; // the user and server of where to pull/push files
-var workdir = '/farm/stuff/'; // where to store video files, needs "in" and "out" subfolders
-var logdir = '/farm/logs/'; // where to store logs
+var scpserver = 'farmer@farm'; // the farmer user and server hostname of the master
+var workdir = '/farm/stuff/'; // where to store video files temporarily on this machine, needs "in" and "out" subfolders
+var logdir = '/farm/logs/'; // where to store logs on this machine
 var heartbeat_interval = 5 * 60 * 1000; // how long between heartbeats (five minutes)
 var cycle_interval = 60 * 1000; // how long between asking for a new job (one minute)
 

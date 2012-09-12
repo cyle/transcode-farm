@@ -138,6 +138,7 @@ Inside the MongoDB shell, do the following to set up the database, collections, 
 	db.jobs.ensureIndex({p:1})
 	db.jobs.ensureIndex({o:1})
 	db.jobs.ensureIndex({hl:1})
+	db.jobs.ensureIndex({eid:1})
 	db.farmers.ensureIndex({e:1})
 	db.farmers.ensureIndex({tsh:1})
 	
@@ -198,5 +199,23 @@ And then at the bottom of the file, add:
 	
 The first line allows the server to delete old temporary files once every two hours if they are over a day old. A good idea.
 The second line runs the remove_expired.php script, which removes expired entries, every minute. Maybe that can be less often, but do what you want.
+
+Wrapping this up, you'll need to do a couple things:
+
+	cd /farm/config
+	cp config.example.php config.php
+	nano config.php
+
+Inside that file, configure the Farm options, like what URL this lives on, how to send mail, etc.
+
+The last important step is building in some kind of login/accounts system. I cannot include the one I use because... well, it's proprietary to Emerson College. I'd like to make it open source sometime, but at the time of this writing, it's not.
+
+So you'll notice that in most every script there's a require_once() for "login_check.php", which uses the $login_required variable. Before you can use this, you'll need to plug in some kind of login system, even if it's just this:
+
+	<?php
+	$current_user['loggedin'] = true;
+	?>
+
+Save that as login_check.php and put it in www-includes. That script will just allow anyone to use the system. Plug in your own system if you have one. But bottom line, you have to have something. The user tracking inside this is rudimentary right now, but it's something, at least.
 
 That... should... be... it. See INSTALL_NODE to install some nodes and get things working!

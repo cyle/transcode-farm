@@ -38,9 +38,9 @@ require_once('../pagepieces/header.php');
 			<div class="twelve columns">
 				<h2>The Farm</h2>
 				<?php
-				$num_done = $farmdb->jobs->find(array('s' => 2, 'hl' => array('$exists' => true)))->count();
+				$num_done = $farmdb->jobs->find(array('s' => 2, 'o' => $origin_id, 'hl' => array('$exists' => true)))->count();
 				
-				$get_avg = $farmdb->jobs->find(array('s' => 2, 'hl' => array('$exists' => true)))->sort(array('hl' => 1));
+				$get_avg = $farmdb->jobs->find(array('s' => 2, 'o' => $origin_id, 'hl' => array('$exists' => true)))->sort(array('hl' => 1));
 				$average_seconds = 0;
 				$avg_total = 0;
 				$avg_count = $get_avg->count();
@@ -52,7 +52,7 @@ require_once('../pagepieces/header.php');
 					$average_seconds = $avg_total/$avg_count;
 				}
 				
-				$get_top_95th = $farmdb->jobs->find(array('s' => 2, 'hl' => array('$exists' => true)))->sort( array('hl' => 1) )->limit(round($num_done * 0.95));
+				$get_top_95th = $farmdb->jobs->find(array('s' => 2, 'o' => $origin_id, 'hl' => array('$exists' => true)))->sort( array('hl' => 1) )->limit(round($num_done * 0.95));
 				$average_9th_seconds = 0;
 				$top_95th_total = 0;
 				$top_95th_count = $get_top_95th->count();
@@ -113,7 +113,7 @@ require_once('../pagepieces/header.php');
 			<div class="twelve columns">
 				<h4>farming jobs currently being working on - sorted by time last updated</h4>
 				<?php
-				$get_working_on = $farmdb->jobs->find( array('s' => 1) )->sort( array('tsu' => -1) );
+				$get_working_on = $farmdb->jobs->find( array('s' => 1, 'o' => $origin_id) )->sort( array('tsu' => -1) );
 				if ($get_working_on->count() == 0) {
 					echo '<p>Looks like nobody is working on anything. That\'s good I guess.</p>';
 				} else {
@@ -139,7 +139,7 @@ require_once('../pagepieces/header.php');
 			<div class="twelve columns">
 				<h4>farming jobs in the queue - first come, first served</h4>
 				<?php
-				$get_queue = $farmdb->jobs->find( array('s' => 0) )->sort( array('tsc' => 1) );
+				$get_queue = $farmdb->jobs->find( array('s' => 0, 'o' => $origin_id) )->sort( array('tsc' => 1) );
 				if ($get_queue->count() == 0) {
 					echo '<p>Nothing in the queue.</p>';
 				} else {
@@ -165,7 +165,7 @@ require_once('../pagepieces/header.php');
 			<div class="twelve columns">
 				<h4>farming jobs that have error'd out</h4>
 				<?php
-				$get_errord = $farmdb->jobs->find( array('s' => 3) )->sort( array('tsc' => -1) );
+				$get_errord = $farmdb->jobs->find( array('s' => 3, 'o' => $origin_id) )->sort( array('tsc' => -1) );
 				if ($get_errord->count() == 0) {
 					echo '<p>Good, nothing has failed because of an error.</p>';
 				} else {
@@ -192,7 +192,7 @@ require_once('../pagepieces/header.php');
 			<div class="twelve columns">
 				<h4>the 20 latest finished farming jobs</h4>
 				<?php
-				$get_finished = $farmdb->jobs->find( array('s' => 2) )->sort( array('tsu' => -1) )->limit(20);
+				$get_finished = $farmdb->jobs->find( array('s' => 2, 'o' => $origin_id) )->sort( array('tsu' => -1) )->limit(20);
 				if ($get_finished->count() == 0) {
 					echo '<p>Nothing done yet.</p>';
 				} else {

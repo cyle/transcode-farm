@@ -30,7 +30,12 @@ require_once('pagepieces/header.php');
 		<!-- start unique page content -->
 		
 		<div class="row">
-			<div class="twelve columns">
+			<div class="three columns" id="left-nav">
+				<p><a href="/upload/" class="button large radius success">Upload Videos &raquo;</a></p>
+				<p><a href="/farming.php" class="button large radius">Public Farm Status Page &raquo;</a></p>
+				<?php if ($current_user['userlevel'] == 1) { ?><p><a href="/admin/farming.php" class="button large radius secondary">Admin Farm Status Page &raquo;</a></p><?php } ?>
+			</div>
+			<div class="nine columns">
 				<?php
 				// if logged in, show user's pending/completed stuff here
 				if ($current_user['loggedin']) {
@@ -54,13 +59,8 @@ require_once('pagepieces/header.php');
 							echo '</div>'."\n";
 						}
 					}
+				}
 				?>
-				<p><a href="/upload/" class="button large radius success">Upload Videos!</a></p>
-				<?php
-				} // end if logged in check
-				?>
-				<p><a href="/farming.php">Public Farm Status Page &raquo;</a></p>
-				<?php if ($current_user['userlevel'] == 1) { ?><p><a href="/admin/farming.php">Admin Farm Status Page &raquo;</a></p><?php } ?>
 			</div>
 		</div>
 		

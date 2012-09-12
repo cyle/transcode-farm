@@ -30,12 +30,20 @@ Array(
 		"name" => "whatever.mp4",
 		"path" => "/farm/upload_tmp/amwdawd.mp4",
 		"username" => "cyle_gage",
+		"email" => "cyle_gage@emerson.edu",
 		"presets" => "high,medium,small"
 	),
 	[1] => ....
 )
 
 */
+
+function checkEmail($email) {
+	if (preg_match("/^([a-zA-Z0-9])+([a-zA-Z0-9\._-])?*@([a-zA-Z0-9_-])+([a-zA-Z0-9\._-]+)+$/", trim($email))) {
+		return true;
+	}
+	return false;
+}
 
 //die(json_encode(array('info' => $upload_info)));
 
@@ -62,6 +70,12 @@ foreach ($upload_info as $batched) {
 	}
 	
 	$username = strtolower(trim($batched['username']));
+	
+	if (isset($batched['email']) && trim($batched['email']) != '' && checkEmail($batched['email'])) {
+		$email = trim($batched['email']);
+	} else {
+		$email = 'nobody@nowhere.com';
+	}
 	
 	// make sure path is set for each
 	if (!isset($batched['path']) || trim($batched['path']) == '') {
@@ -296,7 +310,7 @@ foreach ($upload_info as $batched) {
 	$updated_entry['e'] = true;
 	
 	// write the contact email address
-	$updated_entry['em'] = $username.'@emerson.edu';
+	$updated_entry['em'] = $email;
 	
 	//writeToLog('Updated entry info: '.oneLinePrintArray($updated_entry), $batch_log, $uid, $eid);
 	

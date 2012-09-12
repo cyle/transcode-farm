@@ -90,3 +90,7 @@ div.remove-this-file {
 .button, .label {
 	font-weight: normal;
 }
+
+#index-page #left-nav .button {
+	width: 100%;
+}

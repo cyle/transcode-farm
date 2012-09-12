@@ -130,7 +130,7 @@ function addFarmingJob($eid = '', $paths = array(), $options = '') {
 		return false;
 	}
 	
-	global $tiers;
+	global $tiers, $default_priority, $origin_id;
 	
 	$transcode_options = array();
 	
@@ -149,8 +149,8 @@ function addFarmingJob($eid = '', $paths = array(), $options = '') {
 	
 	$new_job = array();
 	$new_job['eid'] = $eid; // the parent entry this farming job belongs to
-	$new_job['p'] = 100; // priority 100 for general jobs
-	$new_job['o'] = 2; // origin id #2 for general transcode farm
+	$new_job['p'] = $default_priority; // priority 100 for general jobs
+	$new_job['o'] = $origin_id; // origin id #2 for general transcode farm
 	$new_job['s'] = 0; // status of 0 for new jobs
 	$new_job['fid'] = 0; // unknown farmer ID as yet
 	$new_job['in'] = trim($paths['in']);
@@ -172,43 +172,5 @@ function addFarmingJob($eid = '', $paths = array(), $options = '') {
 	return true;
 	
 }
-
-/*
-
-farmer object in mongo
-
-Array(
-	
-	'n' => 'Eddard',			// friendly display name
-	'hn' => 'median-node-34',	// proper hostname
-	'ip' => '199.94.92.91',		// ip address
-	'e' => 1,					// enabled or not -- index'd
-	'tsc' => 1344350435,		// when created
-	'tsh' => 1344350435			// last heartbeat -- index'd
-	
-)
-
-farming job object in mongo
-
-Array(
-	
-	'jid' => MongoId('awnda'),		// transcoding farm job ID
-	'p' => 100,						// priority (1 for median, 100 for transcode farm) -- index'd
-	'o' => 2,						// origin (1 for median, 2 for transcode farm) -- index'd
-	's' => 1,						// current status code -- index'd (0 for pending, 1 for being transcoded, 2 for done, 3 for error)
-	'fid' => MongoId('901ao21j'),	// farmer mongo ID (if any)
-	'in' => '/master/path/in..',	// file input
-	'out' => '/master/path/out...',	// file output -- index'd
-	'vw' => 1280,					// desired video max width
-	'vh' => 720,					// desired video max height
-	'vb' => 1200,					// desired video bitrate
-	'ab' => 128,					// desired audio bitrate
-	'tsc' => 1344333443,			// time created
-	'tsu' => 1393939222				// last updated -- index'd
-	'm' => 'error message',			// error message (if any)
-	
-)
-
-*/
 
 ?>

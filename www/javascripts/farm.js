@@ -29,6 +29,13 @@ $(document).ready(function() {
 				alert('Sorry, but I cannot read your username.');
 				return;
 			}
+			var email = '';
+			if ($('input#em').length && $('input#em').val() != '' && validateEmail($('input#em').val())) {
+				email = $('input#em').val();
+			} else {
+				alert('Sorry, but it looks like you forgot to input an email address.');
+				return;
+			}
 			// get what versions to make...
 			var presets = [];
 			if ($('input#preset-max').prop('checked')) {
@@ -48,7 +55,7 @@ $(document).ready(function() {
 			}
 			temp_id = Math.floor(Math.random() * 100000);
 			$.ajax({
-				url: '/upload.lol?id='+temp_id+'&un='+username,
+				url: '/upload.lol?id='+temp_id+'&un='+username+'&em='+email,
 				//data: $('input.preset').serializeArray(),
 				data: { p: presets },
 				files: $('input.entry-file'),
@@ -159,3 +166,8 @@ function checkStatus() { // check status of uploading file(s)
 		});
 	}
 }
+
+function validateEmail(email) { 
+    var re = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+    return re.test(email);
+} 

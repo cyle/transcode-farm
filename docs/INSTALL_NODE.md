@@ -63,7 +63,13 @@ Cool? Awesome. Let's download the latest farmer.js script from the MASTER server
 	
 You again have to replace "@farm" with your server, along with the path to the farmer.js file on the MASTER server, and you'll need to input the MASTER server's root password.
 
-That's it. You have the farmer.js node script on your NODE. Now to make sure it runs all the time.
+You have the farmer.js node script on your NODE. You need to configure it!
+
+	nano /farm/farmer.js
+	
+Inside, edit the configuration opens near the top of the file. There's a comment that says when you can stop editing.
+
+Now to make sure it runs all the time.
 
 	nano /etc/init/farmer.conf
 	
@@ -92,11 +98,19 @@ Now we can start this as a service on the server, and it'll start whenever the s
 
 	start farmer
 	
-Done. You have a node. In case there are problems, you can set "debugmode = true" in farmer.js and run it in debug mode like so:
+Done. You have a node. 
+
+Now you should see it in the Farming Admin Page, and you'll be able to enable it so the master starts giving it jobs.
+
+## Troubleshooting
+
+In case there are problems, you can set "debugmode = true" in farmer.js and run it in debug mode like so:
 
 	node /farm/farmer.js
 	
 That way it will return some raw data about what's happening directly to the console.
+
+## Updating/restarting
 
 To update the farmer.js file and/or restart the farmer.js script, do the following. Again, replacing server names and paths where necessary:
 

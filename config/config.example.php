@@ -28,6 +28,10 @@ $mail_smtp_server = 'localhost'; // what SMTP server to use
 $delete_expired = true; // you don't actually have to delete expired, but you probably should
 $expire_hours = 48; // how many hours before expiring the finished entries
 
+// this is if you have multiple origins
+$origin_id = 1;
+$default_priority = 1;
+
 /*
 
 	this is the "default user" when someone is not logged in
@@ -39,7 +43,8 @@ $expire_hours = 48; // how many hours before expiring the finished entries
 $current_user = array(
 	'loggedin' => false,
 	'username' => 'nobody',
-	'userlevel' => 6
+	//'email' => 'nobody@nowhere.com', // uncomment this if you have it in your login system
+	'userlevel' => 2
 );
 
 ?>

@@ -2,8 +2,7 @@
 
 /*
 
-	THE NEW UPLOAD WIZARD. ONE WIZARD TO RULE THEM ALL.
-		introduced for median 5
+	THE UPLOADER
 		cyle gage, emerson college, 2012
 	
 */
@@ -53,6 +52,20 @@ require_once('pagepieces/head.php');
 							<div class="select-preset"><label for="preset-small"><input checked="checked" type="checkbox" class="preset" value="small" id="preset-small" /> SMALL - 260p, 300 kbps video, 64 kbps 44.1hz audio. Mobile-friendly.</label></div>
 							<p>Want to learn more about these presets? <a href="/help/presets.php">Learn more here!</a></p>
 						</div>
+						<?php
+						if (isset($current_user['email']) && trim($current_user['email']) != '') {
+						?>
+						<input type="hidden" id="em" name="em" value="<?php echo $current_user['email']; ?>" />
+						<?php
+						} else {
+						?>
+						<div class="panel">
+							<p>Who should we notify when versions are complete? Please enter one email address.</p>
+							<input type="email" id="em" required="required" placeholder="your_name@someplace.com" />
+						</div>
+						<?php
+						}
+						?>
 						<div class="panel">
 							<p>This accepts video files only (MP4, MOV, AVI, WMV, MPG), 4GB individual file limit.</p>
 							<p>Proprietary codecs are not supported (i.e. Apple codecs, HDV, XDCAM, etc).</p>

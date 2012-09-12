@@ -29,11 +29,15 @@ var server = http.createServer(function(req, res) {
 	//console.log(util.inspect(theurl, false, null));
 	var theid = 0;
 	var username = '';
+	var email = '';
 	if (theurl.query.id != undefined) {
 		theid = theurl.query.id * 1;
 	}
 	if (theurl.query.un != undefined) {
 		username = theurl.query.un;
+	}
+	if (theurl.query.em != undefined) {
+		email = theurl.query.em;
 	}
 	if (theurl.pathname == '/upload.lol' && req.method.toLowerCase() == 'post') {
 		if (theid <= 0) {
@@ -85,7 +89,7 @@ var server = http.createServer(function(req, res) {
 			// ok so now parse through the files and put them in their own object/array
 			var final_results = [];
 			for (var i = 0; i < files.length; i++) {
-				var temp_result = { 'name': '', 'path': '', 'username': username, 'presets': fields[0] };
+				var temp_result = { 'name': '', 'path': '', 'username': username, 'email': email, 'presets': fields[0] };
 				temp_result.name = files[i].name;
 				temp_result.path = files[i].path;
 				fs.chownSync(files[i].path, 33, 33);
