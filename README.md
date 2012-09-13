@@ -2,15 +2,13 @@
 
 ### made by Cyle Gage for Emerson College (and the world)
 
-The Open Transcoding Platform is a basic farm of nodes that can transcode video to different formats. People can upload video files, which are then transcoded into smaller web-friendly versions for HTML5/Flash Media Server playback.
+The Open Transcoding Platform is a basic farm of nodes that can transcode video to different formats. People can upload video files, which are then transcoded into smaller web-friendly versions for HTML5/Flash Media Server playback. I built this because I couldn't find anything to do this well enough for my needs.
 
 There is one "master" and at least one "farmer". The master is the web frontend and controller. The farmers simply ask for files to transcode.
 
-This is based entirely on Median's original transcode farm, which I wrote, except this lets you download the end results. This platform is more of an entry point with the difficult video transcoding part done for you, it's up to you to fit this into an existing system which would require it. It is important to note that there is no login system included with this, but there are hooks for it.
+This is based entirely on [Median](http://median.emerson.edu/)'s original transcode farm, which I wrote, except this lets you download the end results. This platform is more of an entry point with the difficult video transcoding part done for you, it's up to you to fit this into an existing system which would require it. It is important to note that there is no login system included with this, but there are hooks for it.
 
 Median actually uses this software to transcode different versions of uploaded videos, utilizing 12+ farmers, which range from dedicated IBM Blades to vSphere VMs. I've included a "tier" system in the Farmer schema to differentiate fast encoders and slow encoders if you want to.
-
-Also, just to give credit where it's due, the web interfaces uses the [Foundation framework](http://foundation.zurb.com/) to make it very browser-friendly.
 
 ## Technology Required
 
@@ -39,6 +37,12 @@ Detailed installation instructions can be found in the /docs/ folder.
 ## Learning More
 
 Read all the information in the /docs/ folder.
+
+## Technology used
+
+- the web interface uses the [Foundation framework](http://foundation.zurb.com/) and jQuery to make it very browser-friendly
+- the upload script uses [Formidable](https://github.com/felixge/node-formidable) for huge file uploads
+- the master server uses lighttpd, nodejs, mongodb, haproxy, ffmpeg, all of which are awesome projects
 
 ## Features yet to be done
 
