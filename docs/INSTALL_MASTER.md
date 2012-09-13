@@ -1,6 +1,8 @@
 # Open Transcoding Platform Installation - Master Instructions
 
-Install Ubuntu 12.04 64bit Server
+Everything inside the code blocks are things to enter via the command line unless otherwise noted.
+
+Firstly, install Ubuntu 12.04 64bit Server. (Really, you should able to use any Debian-based distro, but I use the latest Ubuntu.)
 
 Once installed, log in via whatever user you created, and set up the root user.
 
@@ -17,7 +19,7 @@ Next, just generally update and upgrade the new install.
 	
 Next, we'll install some repositories to get the latest copies of MongoDB, lighttpd, and PHP5.
 
-	apt-get install python-software-properties
+	apt-get -y install python-software-properties
 	add-apt-repository ppa:ondrej/php5
 	add-apt-repository ppa:ondrej/common
 	add-apt-repository ppa:nathan-renniewaldock/ppa
@@ -50,7 +52,7 @@ Now we need to tell lighttpd to use PHP5 via FastCGI:
 
 	lighty-enable-mod
 	
-And type in "fastcgi fastcgi-php" and hit enter.
+At that prompt, type in `fastcgi fastcgi-php` and hit enter.
 	
 And we'll need to configure lighttpd to allow PHP to use its X-Sendfile functionality:
 
@@ -84,10 +86,9 @@ Now to install node.js...
 
 You should be able to run "node -v" and get the version number.
 
-Now we can start downloading files
+Now we can start downloading site files!
 	
-	mkdir /farm
-	git clone [insert github readonly clone address here] /farm
+	git clone git://github.com/cyle/transcode-farm.git /farm
 	
 Awesome! Now you should have a /farm directory with a bunch of subfolders. This is where all of the farm stuff lives.
 
@@ -100,22 +101,24 @@ Let's start with HAProxy, which manages the connections between lighttpd and nod
 	ln -s /farm/config/haproxy-farm.conf haproxy.cfg
 	nano /etc/default/haproxy
 	
-In that file, change ENABLED to 1 instead of 0.
+In that file, change `ENABLED` to 1 instead of 0.
 
 	service haproxy restart
 	
-Bam. Now, to move on to lighttpd.
+Bam. Now, moving on to lighttpd.
 
 	cd /etc/lighttpd
 	nano lighttpd.conf
 	
 In this file, first remove the comment # in front of "mod_rewrite" if there is one.
+
 Next, comment-out the "server.document-root" line by putting a # at the beginning of the line.
-Next, at the bottom, add this line:
+
+Next, at the bottom of the file, add this line:
 
 	include "/farm/config/lighty-farm.conf"
 	
-Okay, now restart lighttpd to take the new config:
+Okay, now restart lighttpd to use the new config:
 
 	service lighttpd restart
 	
@@ -179,9 +182,9 @@ Now let's set up some folder permissions:
 
 	chown -R www-data:www-data /farm/upload_tmp
 	chown -R www-data:www-data /farm/files
-	chmod 775 www-data:www-data /farm/files
+	chmod -R 775 /farm/files
 	
-Let's add the "farmer" user that farmer nodes will be connecting and downloading/uploading files as:
+Let's add the "farmer" user that farmer nodes will be downloading/uploading files as:
 
 	useradd -d /home/farmer -m -g www-data -s /bin/bash farmer
 	passwd farmer
@@ -198,6 +201,7 @@ And then at the bottom of the file, add:
 	* * * * * php /farm/cron/remove_expired.php
 	
 The first line allows the server to delete old temporary files once every two hours if they are over a day old. A good idea.
+
 The second line runs the remove_expired.php script, which removes expired entries, every minute. Maybe that can be less often, but do what you want.
 
 Wrapping this up, you'll need to do a couple things:
@@ -208,16 +212,15 @@ Wrapping this up, you'll need to do a couple things:
 
 Inside that file, configure the Farm options, like what URL this lives on, how to send mail, etc.
 
-The last important step is building in some kind of login/accounts system. I cannot include the one I use because... well, it's proprietary to Emerson College. I'd like to make it open source sometime, but at the time of this writing, it's not.
+The last important step is building in some kind of login/accounts system. I cannot include the one I use because it's proprietary to Emerson College. I wrote it, but I can't release it yet. I'd like to make it open source sometime, but at the time of this writing, it's not.
 
 So you'll notice that in most every script there's a require_once() for "login_check.php", which uses the $login_required variable. Before you can use this, you'll need to plug in some kind of login system, even if it's just this:
 
 	<?php
+	require_once('/farm/config/config.php');
 	$current_user['loggedin'] = true;
 	?>
 
-Save that as login_check.php and put it in www-includes. That script will just allow anyone to use the system. Plug in your own system if you have one. But bottom line, you have to have something. The user tracking inside this is rudimentary right now, but it's something, at least.
+Save that as login_check.php and put it in www-includes. That script will just allow anyone to use the system. Plug in your own system if you have one. But bottom line, you have to have something. The user tracking inside this is rudimentary right now, but it's something, at least. You also should make login.php and logout.php scripts in /farm/www/ for your login system, even if they're just empty files.
 
-You also should make login.php and logout.php scripts in /farm/www/ for your login system, even if they're just empty files.
-
-That... should... be... it. See INSTALL_NODE to install some nodes and get things working!
+That... should... be... it. You should be able to go to the site and start using it. Of course, nothing will get transcoded yet. See INSTALL_NODE to install some nodes and get things working!

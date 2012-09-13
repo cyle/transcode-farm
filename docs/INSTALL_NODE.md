@@ -1,6 +1,8 @@
 # Open Transcoding Platform Installation - Node Instructions
 
-Install Ubuntu 12.04 64bit Server
+Everything inside the code blocks are things to enter via the command line unless otherwise noted.
+
+Firstly, install Ubuntu 12.04 64bit Server. (Really, you should able to use any Debian-based distro, but I use the latest Ubuntu.)
 
 Once installed, log in via whatever user you created, and set up the root user.
 
@@ -15,7 +17,7 @@ Next, just generally update and upgrade the new install.
 	apt-get update
 	apt-get -y upgrade
 	
-Next, we'll set up a repository to download HandBrake binaries from.
+Next, we'll set up a repository to download HandBrake binaries.
 
 	apt-get -y install python-software-properties
 	add-apt-repository ppa:stebbins/handbrake-snapshots
@@ -23,7 +25,7 @@ Next, we'll set up a repository to download HandBrake binaries from.
 
 Now we start installing prerequisites.
 
-	apt-get -y install build-essential libssl-dev curl htop handbrake-cli fail2ban
+	apt-get -y install build-essential libssl-dev curl handbrake-cli
 	
 Now install node.js
 
@@ -41,7 +43,7 @@ Cool. Now let's set up some directories and connectivity with the MASTER server.
 
 	mkdir /farm /farm/logs /farm/stuff /farm/stuff/in /farm/stuff/out
 
-Okay, let's be able to talk to the MASTER server.
+Okay, let's set up some trust with the MASTER server.
 
 	ssh-keygen -t rsa
 
@@ -55,7 +57,7 @@ Type in "yes" to accept the host, and then try this command, again replacing "@f
 
 	ssh farmer@farm
 
-That should let you into the MASTER server without having to input a password.
+That should let you into the MASTER server without having to input a password. `exit` out of the master server to get back to the farmer.
 
 Cool? Awesome. Let's download the latest farmer.js script from the MASTER server:
 
@@ -67,7 +69,7 @@ You have the farmer.js node script on your NODE. You need to configure it!
 
 	nano /farm/farmer.js
 	
-Inside, edit the configuration opens near the top of the file. There's a comment that says when you can stop editing.
+Inside, edit the configuration near the top of the file. There's a comment that says when you can stop editing.
 
 Now to make sure it runs all the time.
 
@@ -102,9 +104,11 @@ Done. You have a node.
 
 Now you should see it in the Farming Admin Page, and you'll be able to enable it so the master starts giving it jobs.
 
+Go make some more! One node is fine, but the point is that you need a farm to do multiple jobs at once.
+
 ## Troubleshooting
 
-In case there are problems, you can set "debugmode = true" in farmer.js and run it in debug mode like so:
+In case there are problems, you can set `debugmode = true` in farmer.js and run it in debug mode like so:
 
 	node /farm/farmer.js
 	

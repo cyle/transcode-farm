@@ -96,6 +96,16 @@ if ($action == 'h') {
 } else if ($action == 'u') {
 	// update job!
 	
+	$farmer = $farmdb->farmers->findOne(array('ip' => $farmer_ip));
+	if (!isset($farmer)) {
+		// welp...
+		die('error');
+	} else {
+		if ($farmer['e'] == false) { // do not allow disabled farmers
+			die('error');
+		}
+	}
+	
 	// get json of job id and new status and potential error message
 	if (!isset($_POST['j']) || trim($_POST['j']) == '') {
 		die('error, no POST');

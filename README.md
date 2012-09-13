@@ -6,9 +6,11 @@ The Open Transcoding Platform is a basic farm of nodes that can transcode video 
 
 There is one "master" and at least one "farmer". The master is the web frontend and controller. The farmers simply ask for files to transcode.
 
-This is based entirely on Median's original transcode farm, which I wrote, except this lets you download the end results.
+This is based entirely on Median's original transcode farm, which I wrote, except this lets you download the end results. This platform is more of an entry point with the difficult video transcoding part done for you, it's up to you to fit this into an existing system which would require it. It is important to note that there is no login system included with this, but there are hooks for it.
 
-Median actually uses this software to transcode lower-bitrate versions of uploaded files, utilizing 12+ farmers, which range from dedicated IBM Blades to vSphere VMs.
+Median actually uses this software to transcode different versions of uploaded videos, utilizing 12+ farmers, which range from dedicated IBM Blades to vSphere VMs. I've included a "tier" system in the Farmer schema to differentiate fast encoders and slow encoders if you want to.
+
+Also, just to give credit where it's due, the web interfaces uses the [Foundation framework](http://foundation.zurb.com/) to make it very browser-friendly.
 
 ## Technology Required
 
@@ -33,3 +35,16 @@ Median actually uses this software to transcode lower-bitrate versions of upload
 ## Installing
 
 Detailed installation instructions can be found in the /docs/ folder.
+
+## Learning More
+
+Read all the information in the /docs/ folder.
+
+## Features yet to be done
+
+* end-user API (not the Farmer API)
+* Help files for the web interface (are they needed?)
+
+## License
+
+I've used the MIT License for this, because why not. I encourage you to let me know if you're using this, and how you're using this, mostly for my own curiousity. My email is cyle_gage@emerson.edu or cylegage@gmail.com.
